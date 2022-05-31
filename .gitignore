@@ -2,6 +2,9 @@
 __pycache__
 .pytest_cache
 
+# C extensions
+*.so
+
 # Packages
 *.egg
 *.egg-info
@@ -30,6 +33,9 @@ coverage.xml
 htmlcov/
 pii_report/
 
+# The Silver Searcher
+.agignore
+
 # Translations
 *.mo
 
@@ -54,6 +60,20 @@ logs/
 chromedriver.log
 ghostdriver.log
 geckodriver.log
+
+# Complexity
+output/*.html
+output/*/index.html
+
+# Sphinx
+docs/_build
+docs/modules.rst
+docs/learner_pathway_progress.rst
+docs/learner_pathway_progress.*.rst
+
+# Private requirements
+requirements/private.in
+requirements/private.txt
 
 # tox environment temporary artifacts
 tests/__init__.py
