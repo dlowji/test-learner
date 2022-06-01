@@ -33,7 +33,7 @@ Every time you develop something in this repo
   workon learner-pathway-progress
 
   # Grab the latest code
-  git checkout main
+  git checkout master
   git pull
 
   # Install/update the dev requirements
@@ -104,12 +104,12 @@ For more information about these options, see the `Getting Help`_ page.
     :target: https://pypi.python.org/pypi/learner-pathway-progress/
     :alt: PyPI
 
-.. |ci-badge| image:: https://github.com/edx/learner-pathway-progress/workflows/Python%20CI/badge.svg?branch=main
+.. |ci-badge| image:: https://github.com/edx/learner-pathway-progress/workflows/Python%20CI/badge.svg?branch=master
     :target: https://github.com/edx/learner-pathway-progress/actions
     :alt: CI
 
-.. |codecov-badge| image:: https://codecov.io/github/edx/learner-pathway-progress/coverage.svg?branch=main
-    :target: https://codecov.io/github/edx/learner-pathway-progress?branch=main
+.. |codecov-badge| image:: https://codecov.io/github/edx/learner-pathway-progress/coverage.svg?branch=master
+    :target: https://codecov.io/github/edx/learner-pathway-progress?branch=master
     :alt: Codecov
 
 .. |doc-badge| image:: https://readthedocs.org/projects/learner-pathway-progress/badge/?version=latest
@@ -121,5 +121,5 @@ For more information about these options, see the `Getting Help`_ page.
     :alt: Supported Python versions
 
 .. |license-badge| image:: https://img.shields.io/github/license/edx/learner-pathway-progress.svg
-    :target: https://github.com/edx/learner-pathway-progress/blob/main/LICENSE.txt
+    :target: https://github.com/edx/learner-pathway-progress/blob/master/LICENSE.txt
     :alt: License
