@@ -101,7 +101,7 @@ README = open(os.path.join(os.path.dirname(__file__), 'README.rst'), encoding="u
 CHANGELOG = open(os.path.join(os.path.dirname(__file__), 'CHANGELOG.rst'), encoding="utf8").read()
 
 setup(
-    name='Learner Pathway Progress',
+    name='learner-pathway-progress',
     version=VERSION,
     description="""A plugin to track learners progress in pathways.""",
     long_description=README + '\n\n' + CHANGELOG,

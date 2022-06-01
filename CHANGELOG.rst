@@ -13,13 +13,30 @@ Change Log
 
 Unreleased
 ~~~~~~~~~~
+[1.0.1] - 2022-06-01
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-*
+Fixed
+_____
 
-[0.1.0] - 2022-05-20
+* Version in __init__.py
+
+Changed
+_______
+
+* name of package in setup.py file
+
+
+[1.0.0] - 2022-06-01
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Added
 _____
 
-* First release on PyPI.
+* Basic skeleton of the app.
+* LearnerPathwayMembership model.
+
+Changed
+_______
+
+* main branch from `main` to `master`
