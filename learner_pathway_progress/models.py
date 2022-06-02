@@ -28,6 +28,7 @@ class LearnerPathwayMembership(TimeStampedModel):
         Learner pathway progress metadata.
         """
 
+        app_label = 'learner_pathway_progress'
         unique_together = ('user', 'learner_pathway_uuid')
 
     def __str__(self):

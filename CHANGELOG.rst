@@ -13,6 +13,21 @@ Change Log
 
 Unreleased
 ~~~~~~~~~~
+[1.1.0] - 2022-06-02
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Added
+_____
+
+* entry point for app
+* app_label in model
+
+Changed
+_______
+
+* Plugin app configuration
+
+
 [1.0.1] - 2022-06-01
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

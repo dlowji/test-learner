@@ -127,4 +127,10 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.8',
     ],
+
+    entry_points={
+        'lms.djangoapp': [
+            "learner_pathway_progress = learner_pathway_progress.apps:LearnerPathwayProgressConfig",
+        ],
+    }
 )

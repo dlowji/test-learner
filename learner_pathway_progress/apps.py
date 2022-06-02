@@ -13,6 +13,7 @@ class LearnerPathwayProgressConfig(AppConfig):
     """
 
     name = 'learner_pathway_progress'
+    label = 'learner_pathway_progress'
     verbose_name = _("Learner Pathway Progress")
     plugin_app = {
         # Configuration setting for Plugin URLs for this app.
@@ -20,8 +21,8 @@ class LearnerPathwayProgressConfig(AppConfig):
             'lms.djangoapp': {
                 PluginURLs.NAMESPACE: 'learner_pathway_progress',
                 PluginURLs.APP_NAME: 'learner_pathway_progress',
-                PluginURLs.REGEX: '^api/learner_pathway_progress/',
-                PluginURLs.RELATIVE_PATH: 'api.urls',
+                PluginURLs.REGEX: '^learner_pathway_progress/',
+                PluginURLs.RELATIVE_PATH: 'urls',
             }
         },
     }
