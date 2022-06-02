@@ -32,6 +32,10 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.sessions',
+    'django.contrib.sites',
+    'common.djangoapps.student',
+    'lms.djangoapps.grades',
+    'openedx.core.djangoapps.programs',
     'learner_pathway_progress',
 )
 
@@ -47,7 +51,10 @@ MIDDLEWARE = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.sites.middleware.CurrentSiteMiddleware',
 )
+
+SITE_ID = 1
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',

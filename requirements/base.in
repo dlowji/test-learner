@@ -3,5 +3,8 @@
 
 Django             # Web application framework
 django-model-utils
+django-simple-history
 pytz               # Time zone information database
 edx-django-utils
+edx-opaque-keys
+jsonfield

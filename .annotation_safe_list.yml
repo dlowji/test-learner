@@ -37,5 +37,7 @@ waffle.Flag:
   ".. no_pii:": "This model has no PII"
 waffle.Sample:
   ".. no_pii:": "This model has no PII"
-waffle.Switch:
+sites.Site:
+  ".. no_pii:": "This model has no PII"
+learner_pathway_progress.HistoricalLearnerPathwayProgress:
   ".. no_pii:": "This model has no PII"
