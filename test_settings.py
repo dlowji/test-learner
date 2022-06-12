@@ -33,6 +33,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.sites',
+    'enterprise',
     'common.djangoapps.student',
     'lms.djangoapps.grades',
     'openedx.core.djangoapps.programs',

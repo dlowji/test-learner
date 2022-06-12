@@ -4,16 +4,19 @@ factories for learner_pathway_progress.
 
 import json
 from datetime import datetime
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import factory
 from common.djangoapps.student.models import CourseEnrollment
 from django.contrib.auth import get_user_model
+from enterprise.models import EnterpriseCourseEnrollment, EnterpriseCustomer, EnterpriseCustomerUser
 from factory.django import DjangoModelFactory
+from faker import Factory as FakerFactory
 from pytz import UTC
 
 from learner_pathway_progress.models import LearnerPathwayMembership, LearnerPathwayProgress
 
+FAKER = FakerFactory.create()
 User = get_user_model()
 
 
@@ -142,8 +145,67 @@ class LearnerPathwayMembershipFactory(DjangoModelFactory):
     """
     Factory class for generating LearnerPathwayMembership
     """
+
     class Meta:
         model = LearnerPathwayMembership
 
     user = factory.SubFactory(UserFactory)
     learner_pathway_uuid = factory.LazyFunction(uuid4)
+
+
+class EnterpriseCustomerFactory(factory.django.DjangoModelFactory):
+    """
+    EnterpriseCustomer factory.
+
+    Creates an instance of EnterpriseCustomer with minimal boilerplate - uses this class' attributes as default
+    parameters for EnterpriseCustomer constructor.
+    """
+
+    class Meta:
+        """
+        Meta for EnterpriseCustomerFactory.
+        """
+
+        model = EnterpriseCustomer
+
+    uuid = factory.LazyAttribute(lambda x: UUID(FAKER.uuid4()))  # pylint: disable=no-member
+    name = factory.LazyAttribute(lambda x: FAKER.company())  # pylint: disable=no-member
+    slug = factory.LazyAttribute(lambda x: FAKER.slug())  # pylint: disable=no-member
+    active = True
+
+
+class EnterpriseCustomerUserFactory(factory.django.DjangoModelFactory):
+    """
+    EnterpriseCustomer factory.
+
+    Creates an instance of EnterpriseCustomerUser with minimal boilerplate - uses this class' attributes as default
+    parameters for EnterpriseCustomerUser constructor.
+    """
+
+    class Meta:
+        """
+        Meta for EnterpriseCustomerFactory.
+        """
+
+        model = EnterpriseCustomerUser
+
+    enterprise_customer = factory.SubFactory(EnterpriseCustomerFactory)
+    user_id = factory.LazyAttribute(lambda x: FAKER.pyint())  # pylint: disable=no-member
+
+
+class EnterpriseCourseEnrollmentFactory(factory.django.DjangoModelFactory):
+    """
+    EnterpriseCourseEnrollment factory.
+
+    Creates an instance of EnterpriseCourseEnrollment with minimal boilerplate.
+    """
+
+    class Meta:
+        """
+        Meta for EnterpriseCourseEnrollmentFactory.
+        """
+
+        model = EnterpriseCourseEnrollment
+
+    course_id = factory.LazyAttribute(lambda x: FAKER.slug())  # pylint: disable=no-member
+    enterprise_customer_user = factory.SubFactory(EnterpriseCustomerUserFactory)

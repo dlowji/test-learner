@@ -59,7 +59,7 @@ class LearnerPathwayProgress(TimeStampedModel):
         """
         Get the progress of the learner in the course.
         """
-        course_runs = course['course_runs'] or []
+        course_runs = course.get('course_runs') or []
         learner_enrollments = []
         for course_run in course_runs:
             learner_course_grade = PersistentCourseGrade.objects.filter(
@@ -101,7 +101,7 @@ class LearnerPathwayProgress(TimeStampedModel):
         Update the progress for the learner in the pathway.
         """
         pathway_snapshot = json.loads(self.learner_pathway_progress)
-        pathway_steps = pathway_snapshot['steps'] or []
+        pathway_steps = pathway_snapshot.get('steps') or []
         for step in pathway_steps:
             step_courses = step['courses'] or []
             step_programs = step['programs'] or []

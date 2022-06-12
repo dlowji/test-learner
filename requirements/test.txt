@@ -112,6 +112,12 @@ pytz==2022.1
     #   django
 pyyaml==6.0
     # via code-annotations
+requests==2.27.1
+    # via
+    #   requests-toolbelt
+    #   twine
+requests-toolbelt==0.9.1
+    # via twine
 six==1.16.0
     # via python-dateutil
 sqlparse==0.4.2
