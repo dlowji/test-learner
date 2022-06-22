@@ -46,14 +46,14 @@ class TestUpdateLearnerPathwayProgress(TestCase):
             enterprise_customer_user = EnterpriseCustomerUserFactory(user_id=self.user.id)
             EnterpriseCourseEnrollmentFactory(
                 enterprise_customer_user=enterprise_customer_user,
-                course_id=course_enrollment.course_id
+                course_id=str(course_enrollment.course_id)
             )
 
     @patch("learner_pathway_progress.utilities.get_pathway_snapshot", )
     @patch("learner_pathway_progress.utilities.get_learner_pathways_associated_with_course", )
     def test_update_learner_pathway_progress(self, mocked_pathways_associated_with_course, mock_pathway_snapshot):
         """
-        Test if learner course attached with the pathway and progress and membership record created.
+        Test if learner course attached with the pathway, his progress and membership record created.
         """
         mocked_pathways_associated_with_course.return_value = [LEARNER_PATHWAY_UUID, LEARNER_PATHWAY_UUID2]
         mock_pathway_snapshot.return_value = LearnerPathwayProgressOutputs.single_pathway_from_discovery
@@ -70,13 +70,14 @@ class TestUpdateLearnerPathwayProgress(TestCase):
 
         self.assertTrue(pathway_membership)
         self.assertTrue(pathway_progress)
+        self.assertTrue(mocked_pathways_associated_with_course.called)
 
     @patch("learner_pathway_progress.utilities.get_pathway_snapshot")
     @patch("learner_pathway_progress.utilities.get_learner_pathways_associated_with_course")
     def test_update_learner_pathway_progress_not_created(self, mocked_pathways_associated_with_course,
                                                          mock_pathway_snapshot):
         """
-        Test if learner course attached with none of the pathways.
+        Test if learner course attached with none of the pathways, his progress and membership record not created
         """
         mocked_pathways_associated_with_course.return_value = []
         mock_pathway_snapshot.return_value = LearnerPathwayProgressOutputs.single_pathway_from_discovery
@@ -93,3 +94,28 @@ class TestUpdateLearnerPathwayProgress(TestCase):
 
         self.assertFalse(pathway_membership)
         self.assertFalse(pathway_progress)
+        self.assertTrue(mocked_pathways_associated_with_course.called)
+
+    @patch("learner_pathway_progress.utilities.get_pathway_snapshot")
+    @patch("learner_pathway_progress.utilities.get_learner_pathways_associated_with_course")
+    def test_update_learner_pathway_progress_with_wrong_course_key(self,
+                                                                   mocked_pathways_associated_with_course,
+                                                                   mock_pathway_snapshot):
+        """
+        Test if learner course_key is not in CourseLocator format, do not create membership or progress record.
+        """
+        mock_pathway_snapshot.return_value = LearnerPathwayProgressOutputs.single_pathway_from_discovery
+        update_learner_pathway_progress(self.user.id, 'course-v1:abc/2022')
+        pathway_membership = LearnerPathwayMembership.objects.filter(
+            user=self.user,
+            learner_pathway_uuid=LEARNER_PATHWAY_UUID
+        ).exists()
+
+        pathway_progress = LearnerPathwayProgress.objects.filter(
+            user=self.user,
+            learner_pathway_uuid=LEARNER_PATHWAY_UUID
+        ).exists()
+
+        self.assertFalse(pathway_membership)
+        self.assertFalse(pathway_progress)
+        self.assertFalse(mocked_pathways_associated_with_course.called)

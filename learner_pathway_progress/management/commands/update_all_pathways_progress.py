@@ -16,12 +16,12 @@ class Command(BaseCommand):
 
     Examples:
 
-        ./manage.py lms update_all_pathways
+        ./manage.py lms update_all_pathways_progress
     """
     help = dedent(__doc__)
 
     def handle(self, *args, **options):
         """
-        Handle the pathway progress update for enterprise learners command.
+        Handle the pathway progress update for enterprise learners.
         """
         update_progress_all_pathways()
