@@ -178,7 +178,31 @@ class LearnerPathwayProgressOutputs:
                 ],
                 "programs": [
                     {
-                        "uuid": "1f301a72-f344-4a31-9e9a-e0b04d8d86b2"
+                        "uuid": "1f301a72-f344-4a31-9e9a-e0b04d8d86b2",
+                        "title": "edX Demonstration Program",
+                        "content_type": "program",
+                        "courses": [
+                            {
+                                "key": "edX+DemoX",
+                                "course_runs": [
+                                    {
+                                        "key": "course-v1:edX+DemoX+Demo_Course"
+                                    }
+                                ]
+                            },
+                            {
+                                "key": "test-course-generator+6724",
+                                "course_runs": []
+                            },
+                            {
+                                "key": "test-course-generator+8344",
+                                "course_runs": [
+                                    {
+                                        "key": "course-v1:test-course-generator+8344+1"
+                                    }
+                                ]
+                            }
+                        ]
                     }
                 ]
             },

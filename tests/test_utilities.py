@@ -6,10 +6,12 @@ from unittest.mock import patch
 
 import pytest
 from django.contrib.sites.models import Site
+from edx_toggles.toggles.testutils import override_waffle_switch
 from opaque_keys.edx.keys import CourseKey
 
 from learner_pathway_progress.models import LearnerPathwayMembership, LearnerPathwayProgress
-from learner_pathway_progress.utilities import update_learner_pathway_progress
+from learner_pathway_progress.utilities import get_pathway_course_run_keys, update_learner_pathway_progress
+from learner_pathway_progress.waffle import ENABLE_PATHWAY_PROGRESS_UPDATE_SWITCH
 from test_utils.constants import (
     LEARNER_PATHWAY_UUID,
     LEARNER_PATHWAY_UUID2,
@@ -25,6 +27,7 @@ from test_utils.factories import (
 
 
 @pytest.mark.django_db
+@override_waffle_switch(ENABLE_PATHWAY_PROGRESS_UPDATE_SWITCH, active=True)
 class TestUpdateLearnerPathwayProgress(TestCase):
     """
     Tests for utilities responsible for learner pathway progress upgrade.
@@ -70,7 +73,7 @@ class TestUpdateLearnerPathwayProgress(TestCase):
 
         self.assertTrue(pathway_membership)
         self.assertTrue(pathway_progress)
-        self.assertTrue(mocked_pathways_associated_with_course.called)
+        mocked_pathways_associated_with_course.assert_called_with(self.user, str(self.course_keys[0]))
 
     @patch("learner_pathway_progress.utilities.get_pathway_snapshot")
     @patch("learner_pathway_progress.utilities.get_learner_pathways_associated_with_course")
@@ -94,7 +97,7 @@ class TestUpdateLearnerPathwayProgress(TestCase):
 
         self.assertFalse(pathway_membership)
         self.assertFalse(pathway_progress)
-        self.assertTrue(mocked_pathways_associated_with_course.called)
+        mocked_pathways_associated_with_course.assert_called_with(self.user, str(self.course_keys[0]))
 
     @patch("learner_pathway_progress.utilities.get_pathway_snapshot")
     @patch("learner_pathway_progress.utilities.get_learner_pathways_associated_with_course")
@@ -102,7 +105,8 @@ class TestUpdateLearnerPathwayProgress(TestCase):
                                                                    mocked_pathways_associated_with_course,
                                                                    mock_pathway_snapshot):
         """
-        Test if learner course_key is not in CourseLocator format, do not create membership or progress record.
+        Test if learner course_key is not in CourseLocator format, do not call
+         get_learner_pathways_associated_with_course method and create membership or progress record.
         """
         mock_pathway_snapshot.return_value = LearnerPathwayProgressOutputs.single_pathway_from_discovery
         update_learner_pathway_progress(self.user.id, 'course-v1:abc/2022')
@@ -119,3 +123,33 @@ class TestUpdateLearnerPathwayProgress(TestCase):
         self.assertFalse(pathway_membership)
         self.assertFalse(pathway_progress)
         self.assertFalse(mocked_pathways_associated_with_course.called)
+
+    def test_get_pathway_course_run_keys(self):
+        """
+        Test if learner course_key is not in CourseLocator format, do not call
+         get_learner_pathways_associated_with_course method and create membership or progress record.
+        """
+        pathway_course_runs = []
+        pathway = LearnerPathwayProgressOutputs.single_pathway_from_discovery
+        pathway_steps = pathway.get('steps') or []
+        for step in pathway_steps:
+            step_courses = step.get('courses') or []
+            step_programs = step.get('programs') or []
+            get_pathway_course_run_keys(step_courses, step_programs, pathway_course_runs)
+
+        expected_pathway_course_runs = ['course-v1:test-enterprise+test1+2020',
+                                        'course-v1:test-enterprise+test1+2021',
+                                        'course-v1:test-enterprise+test1+2022',
+                                        'course-v1:test-enterprise+test1+2023',
+                                        'course-v1:edX+DemoX+Demo_Course',
+                                        'course-v1:test-course-generator+8344+1',
+                                        'course-v1:test-enterprise+test1+2024',
+                                        'course-v1:test-enterprise+test1+2025',
+                                        'course-v1:test-enterprise+test1+2026',
+                                        'course-v1:test-enterprise+test1+2027',
+                                        ]
+
+        self.assertEqual(
+            pathway_course_runs,
+            expected_pathway_course_runs
+        )

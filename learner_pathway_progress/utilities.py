@@ -159,7 +159,7 @@ def back_fill_learner_pathway_membership_and_progress(pathways):
                     )
 
 
-def get_pathway_course_and_course_run_keys(step_courses, step_programs, pathway_course_runs):
+def get_pathway_course_run_keys(step_courses, step_programs, pathway_course_runs):
     """Return all the course run keys linked with pathway step."""
     for course in step_courses:
         course_runs = course.get('course_runs') or []
@@ -190,7 +190,7 @@ def update_progress_all_pathways():
                 step_courses = step.get('courses') or []
                 step_programs = step.get('programs') or []
 
-                get_pathway_course_and_course_run_keys(
+                get_pathway_course_run_keys(
                     step_courses,
                     step_programs,
                     pathway_course_runs,

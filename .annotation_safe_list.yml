@@ -41,3 +41,6 @@ sites.Site:
   ".. no_pii:": "This model has no PII"
 learner_pathway_progress.HistoricalLearnerPathwayProgress:
   ".. no_pii:": "This model has no PII"
+# Via edx-toggles https://github.com/openedx/edx-toggles
+waffle.Switch:
+  ".. no_pii:": "No PII"

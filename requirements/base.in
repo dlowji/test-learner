@@ -6,5 +6,8 @@ django-model-utils
 django-simple-history
 pytz               # Time zone information database
 edx-django-utils
+edx-enterprise
 edx-opaque-keys
+edx-toggles>=1.2.0
 jsonfield
+requests

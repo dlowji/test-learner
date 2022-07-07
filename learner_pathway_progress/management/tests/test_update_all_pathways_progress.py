@@ -27,7 +27,7 @@ from test_utils.factories import (
 
 
 @pytest.mark.django_db
-class TestUpdateLearnerPathwayProgress(TestCase):
+class TestUpdateAllPathwaysProgress(TestCase):
     """
     Tests upgrade progress and create membership for learner pathways management command.
     """

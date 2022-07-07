@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'lms.djangoapps.grades',
     'openedx.core.djangoapps.programs',
     'learner_pathway_progress',
+    'waffle',
 )
 
 LOCALE_PATHS = [
