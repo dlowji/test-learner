@@ -87,7 +87,7 @@ class LearnerPathwayProgress(TimeStampedModel):
         for program_progress in programs_progress:
             if (
                 program_progress['uuid'] == program['uuid'] and
-                program_progress['complete'] and
+                program_progress['completed'] and
                 not program_progress['in_progress'] and
                 not program_progress['not_started']
             ):
