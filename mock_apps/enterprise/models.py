@@ -1,8 +1,8 @@
 from uuid import uuid4
 
-from model_utils.models import TimeStampedModel
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from model_utils.models import TimeStampedModel
 
 
 class EnterpriseCustomer(TimeStampedModel):

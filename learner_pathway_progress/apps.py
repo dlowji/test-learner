@@ -21,8 +21,8 @@ class LearnerPathwayProgressConfig(AppConfig):
             'lms.djangoapp': {
                 PluginURLs.NAMESPACE: 'learner_pathway_progress',
                 PluginURLs.APP_NAME: 'learner_pathway_progress',
-                PluginURLs.REGEX: '^learner_pathway_progress/',
-                PluginURLs.RELATIVE_PATH: 'urls',
+                PluginURLs.REGEX: '^api/learner-pathway-progress/',
+                PluginURLs.RELATIVE_PATH: 'api.urls',
             }
         },
         # Configuration setting for Plugin Signals for this app.

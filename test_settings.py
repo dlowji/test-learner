@@ -45,14 +45,14 @@ LOCALE_PATHS = [
     root('learner_pathway_progress', 'conf', 'locale'),
 ]
 
-ROOT_URLCONF = 'learner_pathway_progress.urls'
+ROOT_URLCONF = 'learner_pathway_progress.api.urls'
 
 SECRET_KEY = 'insecure-secret-key'
 
 MIDDLEWARE = (
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.sites.middleware.CurrentSiteMiddleware',
 )
 

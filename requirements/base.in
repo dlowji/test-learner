@@ -11,3 +11,6 @@ edx-opaque-keys
 edx-toggles>=1.2.0
 jsonfield
 requests
+djangorestframework
+django-filter
+edx-drf-extensions
