@@ -14,6 +14,10 @@ Change Log
 Unreleased
 ~~~~~~~~~~
 
+[1.3.1]- 2022-09-01
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* Removed default attribute from `LearnerPathwayProgress.learner_pathway_uuid` field. This field must be provided at the time of instance creation.
+
 [1.3.0]- 2022-08-11
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 * Added endpoint for LearnerPathwayProgress model.
