@@ -37,6 +37,12 @@ class LearnerPathwayProgressAdmin(admin.ModelAdmin):
 
         model = LearnerPathwayProgress
 
+    def has_add_permission(self, request):
+        """
+        Admin should not able to add a new progress instance.
+        """
+        return False
+
 
 admin.site.register(LearnerPathwayMembership, LearnerPathwayMembershipAdmin)
 admin.site.register(LearnerPathwayProgress, LearnerPathwayProgressAdmin)

@@ -3,7 +3,6 @@ Database models for learner_pathway_progress.
 """
 import json
 import logging
-from uuid import uuid4
 
 from common.djangoapps.student.models import CourseEnrollment
 from django.contrib.auth import get_user_model
@@ -32,7 +31,7 @@ class LearnerPathwayProgress(TimeStampedModel):
 
     user = models.ForeignKey(User, db_index=True, on_delete=models.CASCADE)
     learner_pathway_uuid = models.UUIDField(
-        default=uuid4, editable=False, verbose_name=_('LEARNER_PATHWAY_UUID')
+        editable=False, verbose_name=_('LEARNER_PATHWAY_UUID')
     )
     learner_pathway_progress = JSONField(
         blank=True,
