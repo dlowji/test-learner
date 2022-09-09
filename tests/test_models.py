@@ -12,7 +12,11 @@ from opaque_keys.edx.keys import CourseKey
 
 from learner_pathway_progress.models import LearnerPathwayProgress
 from test_utils.constants import LearnerPathwayProgressOutputs
-from test_utils.factories import CourseEnrollmentFactory, LearnerPathwayMembershipFactory, LearnerPathwayProgressFactory
+from test_utils.factories import (
+    CourseEnrollmentFactory,
+    LearnerEnterprisePathwayMembershipFactory,
+    LearnerPathwayProgressFactory,
+)
 
 User = get_user_model()
 
@@ -132,21 +136,23 @@ class LearnerPathwayProgressModelTests(TestCase):
         )
 
 
-class LearnerPathwayMembershipTests(TestCase):
+class LearnerEnterprisePathwayMembershipTests(TestCase):
     """
-    LearnerPathwayMembership model tests
+    LearnerEnterprisePathwayMembership model tests
     """
     def setUp(self):
         super().setUp()
-        self.membership = LearnerPathwayMembershipFactory()
+        self.membership = LearnerEnterprisePathwayMembershipFactory()
 
     def test_string_representation(self):
         """
-        Test the string representation of the LearnerPathwayMembership model.
+        Test the string representation of the LearnerEnterprisePathwayMembership model.
         """
         pathway_uuid = self.membership.learner_pathway_uuid
         user = self.membership.user
-        expected_str = f'User: {user}, Pathway UUID: {pathway_uuid}'
-        expected_repr = f'<LearnerPathwayMembership user={user} pathway_uuid="{pathway_uuid}">'
+        enterprise_customer_uuid = self.membership.enterprise_customer_uuid
+        expected_str = f'User: {user}, Pathway UUID: {pathway_uuid}, Enterprise UUID: {enterprise_customer_uuid}'
+        expected_repr = f'<LearnerEnterprisePathwayMembership user={user} pathway_uuid="{pathway_uuid}"' \
+                        f' Enterprise UUID: {enterprise_customer_uuid}>'
         assert expected_str == str(self.membership)
         assert expected_repr == repr(self.membership)

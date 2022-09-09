@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
@@ -107,3 +108,25 @@ class EnterpriseCourseEnrollment(TimeStampedModel):
             "The ID of the course in which the learner was enrolled."
         )
     )
+
+    @classmethod
+    def get_enterprise_uuids_with_user_and_course(cls, user_id, course_run_id):
+        """
+        Returns a list of UUID(s) for EnterpriseCustomer(s) that this enrollment
+        links together with the user_id and course_run_id
+        """
+        try:
+            queryset = cls.objects.filter(
+                course_id=course_run_id,
+                enterprise_customer_user__user_id=user_id,
+            )
+
+            linked_enrollments = queryset.select_related(
+                'enterprise_customer_user',
+                'enterprise_customer_user__enterprise_customer',
+            )
+            return [str(le.enterprise_customer_user.enterprise_customer.uuid) for le in linked_enrollments]
+
+        except ObjectDoesNotExist:
+            return []
+

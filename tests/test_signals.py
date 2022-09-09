@@ -9,9 +9,9 @@ import pytest
 from edx_toggles.toggles.testutils import override_waffle_switch
 from opaque_keys.edx.keys import CourseKey
 
-from learner_pathway_progress.models import LearnerPathwayMembership
+from learner_pathway_progress.models import LearnerEnterprisePathwayMembership
 from learner_pathway_progress.signals import (
-    create_learner_pathway_membership_for_user,
+    create_learner_enterprise_pathway_membership_for_user,
     listen_for_course_grade_upgrade_in_learner_pathway,
 )
 from learner_pathway_progress.waffle import ENABLE_PATHWAY_PROGRESS_UPDATE_SWITCH
@@ -66,55 +66,58 @@ class TestSignalsWithWaffleSwitch(TestCase):
 
     @override_waffle_switch(ENABLE_PATHWAY_PROGRESS_UPDATE_SWITCH, active=True)
     @patch("learner_pathway_progress.signals.get_learner_pathways_associated_with_course")
-    def test_create_learner_pathway_membership_for_user_waffle_switch_on(
+    def test_create_learner_enterprise_pathway_membership_for_user_waffle_switch_on(
         self,
         mock_learner_pathways_associated_with_course,
     ):
         """
-        Test create_learner_pathway_membership_for_user signals when waffle switch is on.
+        Test create_learner_enterprise_pathway_membership_for_user signals when waffle switch is on.
         """
         mock_learner_pathways_associated_with_course.return_value = [LEARNER_PATHWAY_UUID]
-        create_learner_pathway_membership_for_user(None, self.enterprise_course_enrollment, True)
-        pathway_membership = LearnerPathwayMembership.objects.filter(
+        create_learner_enterprise_pathway_membership_for_user(None, self.enterprise_course_enrollment, True)
+        pathway_membership = LearnerEnterprisePathwayMembership.objects.filter(
             user=self.user,
-            learner_pathway_uuid=LEARNER_PATHWAY_UUID
+            learner_pathway_uuid=LEARNER_PATHWAY_UUID,
+            enterprise_customer_uuid=self.enterprise_course_enrollment.enterprise_customer_user.enterprise_customer.uuid
         ).exists()
         self.assertTrue(pathway_membership)
         mock_learner_pathways_associated_with_course.assert_called()
 
     @override_waffle_switch(ENABLE_PATHWAY_PROGRESS_UPDATE_SWITCH, active=True)
     @patch("learner_pathway_progress.signals.get_learner_pathways_associated_with_course")
-    def test_create_learner_pathway_membership_for_user_waffle_switch_on_and_course_not_linked_with_any_pathway(
+    def test_create_learner_enterprise_pathway_membership_for_user_and_course_not_linked_with_any_pathway(
         self,
         mock_learner_pathways_associated_with_course,
     ):
         """
-        Test create_learner_pathway_membership_for_user signals when waffle switch is on and course is not linked
-        with any pathway.
+        Test create_learner_enterprise_pathway_membership_for_user signals when waffle switch is on
+        and course is not linked with any pathway.
         """
         mock_learner_pathways_associated_with_course.return_value = []
-        create_learner_pathway_membership_for_user(None, self.enterprise_course_enrollment, True)
-        pathway_membership = LearnerPathwayMembership.objects.filter(
+        create_learner_enterprise_pathway_membership_for_user(None, self.enterprise_course_enrollment, True)
+        pathway_membership = LearnerEnterprisePathwayMembership.objects.filter(
             user=self.user,
-            learner_pathway_uuid=LEARNER_PATHWAY_UUID
+            learner_pathway_uuid=LEARNER_PATHWAY_UUID,
+            enterprise_customer_uuid=self.enterprise_course_enrollment.enterprise_customer_user.enterprise_customer.uuid
         ).exists()
         self.assertFalse(pathway_membership)
         mock_learner_pathways_associated_with_course.assert_called()
 
     @override_waffle_switch(ENABLE_PATHWAY_PROGRESS_UPDATE_SWITCH, active=False)
     @patch("learner_pathway_progress.signals.get_learner_pathways_associated_with_course")
-    def test_create_learner_pathway_membership_for_user_waffle_switch_off(
+    def test_create_learner_enterprise_pathway_membership_for_user_waffle_switch_off(
         self,
         mock_learner_pathways_associated_with_course,
     ):
         """
-        Test create_learner_pathway_membership_for_user signals when waffle switch is off.
+        Test create_learner_enterprise_pathway_membership_for_user signals when waffle switch is off.
         """
         mock_learner_pathways_associated_with_course.return_value = [LEARNER_PATHWAY_UUID]
-        create_learner_pathway_membership_for_user(None, self.enterprise_course_enrollment, True)
-        pathway_membership = LearnerPathwayMembership.objects.filter(
+        create_learner_enterprise_pathway_membership_for_user(None, self.enterprise_course_enrollment, True)
+        pathway_membership = LearnerEnterprisePathwayMembership.objects.filter(
             user=self.user,
-            learner_pathway_uuid=LEARNER_PATHWAY_UUID
+            learner_pathway_uuid=LEARNER_PATHWAY_UUID,
+            enterprise_customer_uuid=self.enterprise_course_enrollment.enterprise_customer_user.enterprise_customer.uuid
         ).exists()
         self.assertFalse(pathway_membership)
         mock_learner_pathways_associated_with_course.assert_not_called()

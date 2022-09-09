@@ -37,7 +37,7 @@ class LearnerPathwayProgressConfig(AppConfig):
                     {
                         PluginSignals.SENDER_PATH: 'enterprise.models.EnterpriseCourseEnrollment',
                         PluginSignals.SIGNAL_PATH: 'django.db.models.signals.post_save',
-                        PluginSignals.RECEIVER_FUNC_NAME: 'create_learner_pathway_membership_for_user',
+                        PluginSignals.RECEIVER_FUNC_NAME: 'create_learner_enterprise_pathway_membership_for_user',
                     },
                 ],
             },

@@ -9,6 +9,8 @@ LEARNER_PATHWAY_UUID = '1f301a72-f344-4a31-9e9a-e0b04d8d86b1'
 LEARNER_PATHWAY_UUID2 = '1f301a72-f344-4a31-9e9a-e0b04d8d86b2'
 LEARNER_PATHWAY_UUID3 = '1f301a72-f344-4a31-9e9a-e0b04d8d86b3'
 LEARNER_PATHWAY_UUID4 = '1f301a72-f344-4a31-9e9a-e0b04d8d86b3'
+ENTERPRISE_CUSTOMER_UUID = '1f301a72-f344-4a31-9e9a-e0b04d8d86b6'
+ENTERPRISE_CUSTOMER_UUID2 = '1f301a72-f344-4a31-9e9a-e0b04d8d86c1'
 
 
 class LearnerPathwayProgressOutputs:
@@ -331,7 +333,8 @@ class LearnerPathwayProgressOutputs:
                                 "key": "course-v1:test-enterprise+test1+2021"
                             }
                         ],
-                        "status": "IN_PROGRESS"
+                        "status": "IN_PROGRESS",
+                        "enterprises": "[]",
                     },
                     {
                         "key": "AA+AA102",
@@ -343,13 +346,15 @@ class LearnerPathwayProgressOutputs:
                                 "key": "course-v1:test-enterprise+test1+2023"
                             }
                         ],
-                        "status": "IN_PROGRESS"
+                        "status": "IN_PROGRESS",
+                        "enterprises": "[]",
                     }
                 ],
                 "programs": [
                     {
                         "uuid": "1f301a72-f344-4a31-9e9a-e0b04d8d86b2",
-                        "status": "NOT_STARTED"
+                        "status": "NOT_STARTED",
+                        "enterprises": "[]"
                     }
                 ],
                 "status": 0.0
@@ -368,7 +373,8 @@ class LearnerPathwayProgressOutputs:
                                 "key": "course-v1:test-enterprise+test1+2025"
                             }
                         ],
-                        "status": "IN_PROGRESS"
+                        "status": "IN_PROGRESS",
+                        "enterprises": "[]"
                     },
                     {
                         "key": "AA+AA104",
@@ -380,13 +386,15 @@ class LearnerPathwayProgressOutputs:
                                 "key": "course-v1:test-enterprise+test1+2027"
                             }
                         ],
-                        "status": "IN_PROGRESS"
+                        "status": "IN_PROGRESS",
+                        "enterprises": "[]"
                     }
                 ],
                 "programs": [
                     {
                         "uuid": "1f301a72-f344-4a31-9e9a-e0b04d8d86b3",
-                        "status": "NOT_STARTED"
+                        "status": "NOT_STARTED",
+                        "enterprises": "[]"
                     }
                 ],
                 "status": 0.0
@@ -411,7 +419,8 @@ class LearnerPathwayProgressOutputs:
                                 "key": "course-v1:test-enterprise+test1+2021"
                             }
                         ],
-                        "status": "IN_PROGRESS"
+                        "status": "IN_PROGRESS",
+                        "enterprises": "[]"
                     },
                     {
                         "key": "AA+AA102",
@@ -423,13 +432,15 @@ class LearnerPathwayProgressOutputs:
                                 "key": "course-v1:test-enterprise+test1+2023"
                             }
                         ],
-                        "status": "NOT_STARTED"
+                        "status": "NOT_STARTED",
+                        "enterprises": "[]"
                     }
                 ],
                 "programs": [
                     {
                         "uuid": "1f301a72-f344-4a31-9e9a-e0b04d8d86b2",
-                        "status": "NOT_STARTED"
+                        "status": "NOT_STARTED",
+                        "enterprises": "[]"
                     }
                 ],
                 "status": 0.0
@@ -448,7 +459,8 @@ class LearnerPathwayProgressOutputs:
                                 "key": "course-v1:test-enterprise+test1+2025"
                             }
                         ],
-                        "status": "IN_PROGRESS"
+                        "status": "IN_PROGRESS",
+                        "enterprises": "[]"
                     },
                     {
                         "key": "AA+AA104",
@@ -460,13 +472,15 @@ class LearnerPathwayProgressOutputs:
                                 "key": "course-v1:test-enterprise+test1+2027"
                             }
                         ],
-                        "status": "NOT_STARTED"
+                        "status": "NOT_STARTED",
+                        "enterprises": "[]"
                     }
                 ],
                 "programs": [
                     {
                         "uuid": "1f301a72-f344-4a31-9e9a-e0b04d8d86b3",
-                        "status": "NOT_STARTED"
+                        "status": "NOT_STARTED",
+                        "enterprises": "[]"
                     }
                 ],
                 "status": 0.0

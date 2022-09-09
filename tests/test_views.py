@@ -10,8 +10,9 @@ from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from pytest import mark
 
-from learner_pathway_progress.models import LearnerPathwayProgress
+from learner_pathway_progress.models import LearnerEnterprisePathwayMembership, LearnerPathwayProgress
 from test_utils.constants import (
+    ENTERPRISE_CUSTOMER_UUID,
     LEARNER_PATHWAY_A_UUID,
     LEARNER_PATHWAY_B_UUID,
     LEARNER_PATHWAY_C_UUID,
@@ -40,6 +41,11 @@ class TestLearnerPathwayProgressViewSet(TestCase):
         self.client = Client()
 
         # create learner pathway data
+        self.learner_pathway_enterprise_membership = LearnerEnterprisePathwayMembership.objects.create(
+            user=self.user,
+            learner_pathway_uuid=LEARNER_PATHWAY_A_UUID,
+            enterprise_customer_uuid=ENTERPRISE_CUSTOMER_UUID,
+        )
         self.learner_pathway_progressA = LearnerPathwayProgress.objects.create(
             user=self.user,
             learner_pathway_uuid=LEARNER_PATHWAY_A_UUID,
@@ -119,3 +125,18 @@ class TestLearnerPathwayProgressViewSet(TestCase):
         api_response = self.client.get(url)
         data = api_response.json()
         assert len(data) == 0
+
+    def test_learner_pathway_api_enterprise_filtering(self):
+        """
+        Verify that filtering on enterprise uuid is enabled for learner pathway progress api .
+        """
+        url = f'{self.view_url}?enterprise_uuid={ENTERPRISE_CUSTOMER_UUID}'
+        api_response = self.client.get(url)
+        data = api_response.json()
+        assert len(data) == 1
+        assert data[0]['learner_pathway_progress']['uuid'] == LEARNER_PATHWAY_A_UUID
+        url = f'{self.view_url}?uuid={LEARNER_PATHWAY_A_UUID}&enterprise_uuid={ENTERPRISE_CUSTOMER_UUID}'
+        api_response = self.client.get(url)
+        data = api_response.json()
+        assert len(data) == 1
+        assert data[0]['learner_pathway_progress']['uuid'] == LEARNER_PATHWAY_A_UUID

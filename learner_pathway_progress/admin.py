@@ -3,23 +3,23 @@ Admin interface for learner_pathway_progress.
 """
 from django.contrib import admin
 
-from learner_pathway_progress.models import LearnerPathwayMembership, LearnerPathwayProgress
+from learner_pathway_progress.models import LearnerEnterprisePathwayMembership, LearnerPathwayProgress
 
 
-class LearnerPathwayMembershipAdmin(admin.ModelAdmin):
+class LearnerEnterprisePathwayMembershipAdmin(admin.ModelAdmin):
     """
-    Admin for LearnerPathwayMembership Model.
+    Admin for LearnerEnterprisePathwayMembership Model.
     """
 
     raw_id_fields = ('user', )
-    list_display = ('user', 'learner_pathway_uuid', 'created')
+    list_display = ('user', 'learner_pathway_uuid', 'enterprise_customer_uuid', 'created')
 
     class Meta:
         """
-        Metadata for LearnerPathwayMembership model admin.
+        Metadata for LearnerEnterprisePathwayMembership model admin.
         """
 
-        model = LearnerPathwayMembership
+        model = LearnerEnterprisePathwayMembership
 
 
 class LearnerPathwayProgressAdmin(admin.ModelAdmin):
@@ -44,5 +44,5 @@ class LearnerPathwayProgressAdmin(admin.ModelAdmin):
         return False
 
 
-admin.site.register(LearnerPathwayMembership, LearnerPathwayMembershipAdmin)
+admin.site.register(LearnerEnterprisePathwayMembership, LearnerEnterprisePathwayMembershipAdmin)
 admin.site.register(LearnerPathwayProgress, LearnerPathwayProgressAdmin)

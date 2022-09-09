@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from learner_pathway_progress.api.filters import PathwayProgressUUIDFilter
 from learner_pathway_progress.api.serializers import LearnerPathwayProgressSerializer
-from learner_pathway_progress.models import LearnerPathwayProgress
+from learner_pathway_progress.models import LearnerEnterprisePathwayMembership, LearnerPathwayProgress
 
 
 class LearnerPathwayProgressViewSet(viewsets.ReadOnlyModelViewSet):
@@ -21,7 +21,8 @@ class LearnerPathwayProgressViewSet(viewsets.ReadOnlyModelViewSet):
 
             GET /api/learner-pathway-progress/v1/progress/
             GET /api/learner-pathway-progress/v1/progress/{learner_pathway_uuid}/
-            GET /api/learner-pathway-progress/v1/progress/?uuid={learner_pathway_uuid}
+            GET /api/learner-pathway-progress/v1/progress/?enterprise_uuid={enterprise_uuid}
+            GET /api/learner-pathway-progress/v1/progress/?uuid={learner_pathway_uuid}&enterprise_uuid={enterprise_uuid}
             GET /api/learner-pathway-progress/v1/progress/?uuid={learner_pathway_uuid1},{learner_pathway_uuid2}
 
         **GET Parameters**
@@ -142,5 +143,16 @@ class LearnerPathwayProgressViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_class = PathwayProgressUUIDFilter
 
     def get_queryset(self):
+        enterprise_uuid = self.request.query_params.get('enterprise_uuid')
         user = self.request.user
+        if enterprise_uuid:
+            learner_enterprise_pathways = list(LearnerEnterprisePathwayMembership.objects.filter(
+                user=user,
+                enterprise_customer_uuid=enterprise_uuid
+            ).values_list('learner_pathway_uuid', flat=True))
+            return LearnerPathwayProgress.objects.filter(
+                user=user,
+                learner_pathway_uuid__in=learner_enterprise_pathways,
+            )
+
         return LearnerPathwayProgress.objects.filter(user=user)

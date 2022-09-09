@@ -14,3 +14,11 @@ def check_catalog_integration_and_get_user(error_message_field):
 
 def get_catalog_api_client(user):
     return None
+
+
+def course_run_keys_for_program(program):
+    return None
+
+
+def get_programs(uuid):
+    return None

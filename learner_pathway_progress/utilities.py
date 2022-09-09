@@ -7,12 +7,17 @@ from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 from enterprise.models import EnterpriseCourseEnrollment
 from opaque_keys.edx.locator import CourseLocator
-from openedx.core.djangoapps.catalog.utils import check_catalog_integration_and_get_user, get_catalog_api_base_url
+from openedx.core.djangoapps.catalog.utils import (
+    check_catalog_integration_and_get_user,
+    course_run_keys_for_program,
+    get_catalog_api_base_url,
+)
 from openedx.core.djangoapps.catalog.utils import get_catalog_api_client as create_catalog_api_client
+from openedx.core.djangoapps.catalog.utils import get_programs
 from requests.exceptions import HTTPError
 
+from learner_pathway_progress import models
 from learner_pathway_progress.constants import CHUNK_SIZE, PATHWAY_LOGS_IDENTIFIER
-from learner_pathway_progress.models import LearnerPathwayMembership, LearnerPathwayProgress
 
 log = getLogger(__name__)
 
@@ -57,6 +62,41 @@ def get_pathway_snapshot(user, pathway_uuid):
     return result
 
 
+def get_learner_enterprises_for_course_run(user_id, course_run):
+    """
+    Get the enterprises associated with the learner and the course_run.
+    """
+    enterprise_uuids = EnterpriseCourseEnrollment.get_enterprise_uuids_with_user_and_course(user_id, course_run)
+    return enterprise_uuids
+
+
+def get_learner_enterprises_for_course(user, course):
+    """
+    Get the enterprises associated with the learner and the course.
+    """
+    course_runs = course.get('course_runs') or []
+    learner_enterprise_uuids = set()
+    for course_run in course_runs:
+        enterprise_uuids = get_learner_enterprises_for_course_run(user.id, course_run['key'])
+        if enterprise_uuids:
+            learner_enterprise_uuids.update(enterprise_uuids)
+    return learner_enterprise_uuids
+
+
+def get_learner_enterprises_for_program(user, program):
+    """
+    Get the enterprises associated with the learner and the program.
+    """
+    learner_enterprise_uuids = set()
+    program = get_programs(uuid=program['uuid'])  # pylint: disable=assignment-from-none
+    if program:
+        course_run_keys = course_run_keys_for_program(program)  # pylint: disable=assignment-from-none
+        for course_run_key in course_run_keys:  # pylint: disable=not-an-iterable
+            enterprise_uuids = get_learner_enterprises_for_course_run(user.id, course_run_key)
+            learner_enterprise_uuids.update(enterprise_uuids)
+    return learner_enterprise_uuids
+
+
 def update_learner_pathway_progress(user_id, course_id):
     """Update progress of all pathways linked with this course_id."""
     pathways_linked_with_course = None
@@ -77,11 +117,17 @@ def update_learner_pathway_progress(user_id, course_id):
         for learner_pathway_uuid in pathways_linked_with_course:
             pathway_snapshot = get_pathway_snapshot(user, learner_pathway_uuid)
             if pathway_snapshot:
-                LearnerPathwayMembership.objects.get_or_create(
-                    user=user,
-                    learner_pathway_uuid=learner_pathway_uuid
+                enterprise_learner_linked_with_course_run = get_learner_enterprises_for_course_run(
+                    user_id,
+                    course_key
                 )
-                pathway_progress, _ = LearnerPathwayProgress.objects.get_or_create(
+                for enterprise_uuid in enterprise_learner_linked_with_course_run:
+                    models.LearnerEnterprisePathwayMembership.objects.get_or_create(
+                        user=user,
+                        learner_pathway_uuid=learner_pathway_uuid,
+                        enterprise_customer_uuid=enterprise_uuid,
+                    )
+                pathway_progress, _ = models.LearnerPathwayProgress.objects.get_or_create(
                     user=user,
                     learner_pathway_uuid=learner_pathway_uuid,
                 )
@@ -90,7 +136,7 @@ def update_learner_pathway_progress(user_id, course_id):
                 pathway_progress.update_pathway_progress()
                 log.info(
                     f"{PATHWAY_LOGS_IDENTIFIER}: Pathway:{learner_pathway_uuid} updated associated "
-                    f"with course: {course_key}"
+                    f"with course_key: {course_key}"
                 )
 
 
@@ -124,6 +170,7 @@ def back_fill_learner_pathway_membership_and_progress(pathways):
     queryset = EnterpriseCourseEnrollment.objects.all().select_related('enterprise_customer_user').only(
         'course_id',
         'enterprise_customer_user__user_id',
+        'enterprise_customer_user__enterprise_customer',
     )
     paginator = Paginator(queryset, CHUNK_SIZE)
     for page_number in paginator.page_range:
@@ -135,28 +182,34 @@ def back_fill_learner_pathway_membership_and_progress(pathways):
             pathway_course_runs = pathway['pathway-course-runs']
             for enrollment in page.object_list:
                 user = User.objects.filter(id=enrollment.enterprise_customer_user.user_id).first()
-                pathway_progress_exist = LearnerPathwayProgress.objects.filter(
+                pathway_progress_exist = models.LearnerPathwayProgress.objects.filter(
                     user=user,
                     learner_pathway_uuid=pathway['pathway-uuid'],
                 ).exists()
-                if not pathway_progress_exist and enrollment.course_id in pathway_course_runs:
-
-                    LearnerPathwayMembership.objects.get_or_create(
-                        user=user,
-                        learner_pathway_uuid=pathway['pathway-uuid']
-                    )
-                    pathway_progress = LearnerPathwayProgress.objects.create(
+                if enrollment.course_id in pathway_course_runs:
+                    models.LearnerEnterprisePathwayMembership.objects.get_or_create(
                         user=user,
                         learner_pathway_uuid=pathway['pathway-uuid'],
+                        enterprise_customer_uuid=enrollment.enterprise_customer_user.enterprise_customer.uuid,
                     )
-                    pathway_progress.learner_pathway_progress = json.dumps(pathway['snapshot'])
-                    pathway_progress.save()
-                    pathway_progress.update_pathway_progress()
-
                     log.info(
-                        f"{PATHWAY_LOGS_IDENTIFIER}: Pathway Progress and Membership created for user:{user.email}"
+                        f"{PATHWAY_LOGS_IDENTIFIER}: Pathway Membership created for user:{user.email}"
                         f" with pathway:{pathway['pathway-uuid']}"
+                        f" and enterprise uuid:{enrollment.enterprise_customer_user.enterprise_customer.uuid}"
                     )
+                    if not pathway_progress_exist:
+                        pathway_progress = models.LearnerPathwayProgress.objects.create(
+                            user=user,
+                            learner_pathway_uuid=pathway['pathway-uuid'],
+                        )
+                        pathway_progress.learner_pathway_progress = json.dumps(pathway['snapshot'])
+                        pathway_progress.save()
+                        pathway_progress.update_pathway_progress()
+
+                        log.info(
+                            f"{PATHWAY_LOGS_IDENTIFIER}: Pathway Progress created for user:{user.email}"
+                            f" with pathway:{pathway['pathway-uuid']}"
+                        )
 
 
 def get_pathway_course_run_keys(step_courses, step_programs, pathway_course_runs):

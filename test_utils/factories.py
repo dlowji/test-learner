@@ -14,7 +14,7 @@ from factory.django import DjangoModelFactory
 from faker import Factory as FakerFactory
 from pytz import UTC
 
-from learner_pathway_progress.models import LearnerPathwayMembership, LearnerPathwayProgress
+from learner_pathway_progress.models import LearnerEnterprisePathwayMembership, LearnerPathwayProgress
 
 FAKER = FakerFactory.create()
 User = get_user_model()
@@ -141,16 +141,17 @@ class LearnerPathwayProgressFactory(DjangoModelFactory):
         })
 
 
-class LearnerPathwayMembershipFactory(DjangoModelFactory):
+class LearnerEnterprisePathwayMembershipFactory(DjangoModelFactory):
     """
-    Factory class for generating LearnerPathwayMembership
+    Factory class for generating LearnerEnterprisePathwayMembership
     """
 
     class Meta:
-        model = LearnerPathwayMembership
+        model = LearnerEnterprisePathwayMembership
 
     user = factory.SubFactory(UserFactory)
     learner_pathway_uuid = factory.LazyFunction(uuid4)
+    enterprise_customer_uuid = factory.LazyFunction(uuid4)
 
 
 class EnterpriseCustomerFactory(factory.django.DjangoModelFactory):

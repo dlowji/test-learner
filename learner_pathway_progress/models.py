@@ -1,6 +1,8 @@
+# lint-amnesty, pylint: disable=cyclic-import
 """
 Database models for learner_pathway_progress.
 """
+
 import json
 import logging
 
@@ -99,6 +101,11 @@ class LearnerPathwayProgress(TimeStampedModel):
         """
         Update the progress for the learner in the pathway.
         """
+        # pylint: disable=import-outside-toplevel
+        from learner_pathway_progress.utilities import (
+            get_learner_enterprises_for_course,
+            get_learner_enterprises_for_program,
+        )
         pathway_snapshot = json.loads(self.learner_pathway_progress)
         pathway_steps = pathway_snapshot.get('steps') or []
         for step in pathway_steps:
@@ -109,11 +116,17 @@ class LearnerPathwayProgress(TimeStampedModel):
             for course in step_courses:
                 learner_course_status = self.get_learner_course_status(self.user, course)
                 course["status"] = learner_course_status
+                course["enterprises"] = json.dumps(
+                    get_learner_enterprises_for_course(self.user, course), default=list
+                )
                 if learner_course_status == PathwayCourseStatus.complete:
                     completion_count += 1
             for program in step_programs:
                 learner_program_status = self.get_learner_program_status(self.user, program)
                 program["status"] = learner_program_status
+                program["enterprises"] = json.dumps(
+                    get_learner_enterprises_for_program(self.user, program), default=list
+                )
                 if learner_program_status == PathwayProgramStatus.complete:
                     completion_count += 1
             step['status'] = completion_count / step_completion_requirement * 100
@@ -121,14 +134,21 @@ class LearnerPathwayProgress(TimeStampedModel):
         self.save()
 
 
-class LearnerPathwayMembership(TimeStampedModel):
+class LearnerEnterprisePathwayMembership(TimeStampedModel):
     """
-    Model to store membership of learner in learner pathway.
+    Model to store pathway membership of an enterprise learner.
 
     .. no_pii:
     """
 
     user = models.ForeignKey(User, db_index=True, on_delete=models.CASCADE)
+    enterprise_customer_uuid = models.UUIDField(
+        editable=False,
+        db_index=True,
+        verbose_name=_('ENTERPRISE_CUSTOMER_UUID'),
+        help_text=_("UUID of associated enterprise customer")
+    )
+
     learner_pathway_uuid = models.UUIDField(
         editable=False,
         verbose_name=_('LEARNER_PATHWAY_UUID'),
@@ -141,16 +161,18 @@ class LearnerPathwayMembership(TimeStampedModel):
         """
 
         app_label = 'learner_pathway_progress'
-        unique_together = ('user', 'learner_pathway_uuid')
+        unique_together = ('user', 'learner_pathway_uuid', 'enterprise_customer_uuid')
 
     def __str__(self):
         """
         Create a human-readable string representation of the object.
         """
-        return f'User: {self.user}, Pathway UUID: {self.learner_pathway_uuid}'
+        return f'User: {self.user}, Pathway UUID: {self.learner_pathway_uuid},' \
+               f' Enterprise UUID: {self.enterprise_customer_uuid}'
 
     def __repr__(self):
         """
         Return string representation.
         """
-        return f'<LearnerPathwayMembership user={self.user} pathway_uuid="{self.learner_pathway_uuid}">'
+        return f'<LearnerEnterprisePathwayMembership user={self.user} pathway_uuid="{self.learner_pathway_uuid}" ' \
+               f'Enterprise UUID: {self.enterprise_customer_uuid}>'
