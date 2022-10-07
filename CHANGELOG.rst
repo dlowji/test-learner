@@ -14,6 +14,10 @@ Change Log
 Unreleased
 ~~~~~~~~~~
 
+[1.3.3]- 2022-10-07
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* Added a data migration to delete data for LearnerEnterprisePathwayMembership and LearnerPathwayProgress table.
+
 [1.3.2]- 2022-09-07
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 * Added enterprise with learner pathway membership.
