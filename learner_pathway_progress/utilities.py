@@ -18,6 +18,7 @@ from requests.exceptions import HTTPError
 
 from learner_pathway_progress import models
 from learner_pathway_progress.constants import CHUNK_SIZE, PATHWAY_LOGS_IDENTIFIER
+from learner_pathway_progress.models import LearnerPathwayProgress
 
 log = getLogger(__name__)
 
@@ -224,6 +225,13 @@ def get_pathway_course_run_keys(step_courses, step_programs, pathway_course_runs
             program_course_runs = program_course.get('course_runs') or []
             for program_course_run in program_course_runs:
                 pathway_course_runs.append(program_course_run['key'])
+
+
+def update_existing_pathways_progress():
+    """Update progress of all existing pathways."""
+    learner_pathway_progress = LearnerPathwayProgress.objects.all()
+    for pathway_progress in learner_pathway_progress:
+        pathway_progress.update_pathway_progress()
 
 
 def update_progress_all_pathways():
