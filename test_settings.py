@@ -39,6 +39,8 @@ INSTALLED_APPS = (
     'openedx.core.djangoapps.programs',
     'learner_pathway_progress',
     'waffle',
+    'rest_framework',
+    'django.contrib.staticfiles',
 )
 
 LOCALE_PATHS = [
@@ -60,7 +62,7 @@ SITE_ID = 1
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'APP_DIRS': False,
+    'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
             'django.contrib.auth.context_processors.auth',  # this is required for admin
@@ -81,3 +83,17 @@ ECOMMERCE_PUBLIC_URL_ROOT = None
 ENTERPRISE_CATALOG_INTERNAL_ROOT_URL = 'http://enterprise.catalog.app:18160'
 ENTERPRISE_ENROLLMENT_API_URL = LMS_ROOT_URL + LMS_ENROLLMENT_API_PATH
 LMS_INTERNAL_ROOT_URL = LMS_ROOT_URL
+
+ALLOW_HOSTS = ['*']
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+DEBUG = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ]
+}
+
+STATIC_URL = "/static/"

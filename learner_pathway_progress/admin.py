@@ -4,7 +4,7 @@ Admin interface for learner_pathway_progress.
 from django.contrib import admin
 
 from learner_pathway_progress.models import LearnerEnterprisePathwayMembership, LearnerPathwayProgress
-
+from .models import Author, Genre, Book, BookInstance
 
 class LearnerEnterprisePathwayMembershipAdmin(admin.ModelAdmin):
     """
@@ -46,3 +46,8 @@ class LearnerPathwayProgressAdmin(admin.ModelAdmin):
 
 admin.site.register(LearnerEnterprisePathwayMembership, LearnerEnterprisePathwayMembershipAdmin)
 admin.site.register(LearnerPathwayProgress, LearnerPathwayProgressAdmin)
+
+admin.site.register(Book)
+admin.site.register(Author)
+admin.site.register(Genre)
+admin.site.register(BookInstance)
